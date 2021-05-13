@@ -208,6 +208,30 @@ public class juniors {
         System.out.println(myAtoi2("20000000000000000000"));
         System.out.println(myAtoi2("21474836460"));
 
+        //字符串转换整数
+        System.out.println("实现 strStr() ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓");
+        System.out.println(" ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓");
+//        给你两个字符串 haystack 和 needle ，请你在 haystack 字符串中找出 needle 字符串出现的第一个位置（下标从 0 开始）。如果不存在，则返回  -1 。
+//        当 needle 是空字符串时，我们应当返回什么值呢？这是一个在面试中很好的问题。
+//
+//        对于本题而言，当 needle 是空字符串时我们应当返回 0 。这与 C 语言的 strstr() 以及 Java 的 indexOf() 定义相符。
+//
+//        示例 1：
+//
+//        输入：haystack = "hello", needle = "ll"
+//        输出：2
+//        示例 2：
+//
+//        输入：haystack = "aaaaa", needle = "bba"
+//        输出：-1
+//        示例 3：
+//
+//        输入：haystack = "", needle = ""
+//        输出：0
+
+        int i = strStr("hello", "ll");
+        System.out.println(i);
+
     }
 
     //删除排序数组中的重复项
@@ -1069,17 +1093,71 @@ public class juniors {
     }
 
     private static int strStr(String haystack, String needle) {
-        if(haystack.length() == 0 || needle.length() == 0 || needle.length() > haystack.length()){
+
+        if("".equals(needle)){
             return 0;
         }
-        int j = needle.length();
-        for (int i = 0; i < haystack.length(); i++) {
-            char c = haystack.charAt(0);
-//            haystack.charAt();
-        }
-        return 0;
-    }
 
+        int next [] = new int[needle.length()];
+
+        getNext3(needle,next);
+
+        int i = 0;
+        int j = 0;
+        while ( i < haystack.length() && j < needle.length()){
+            if(j == -1 || haystack.charAt(i) == needle.charAt(j)){
+                i++;
+                j++;
+            }else{
+                j = next[j];
+            }
+            if(j == needle.length()){
+                return i-j;
+            }
+        }
+        return -1;
+    }
+    private static void getNext3(String p, int next[]){
+        //第0个位置为-1
+        next[0] = -1;
+        int i = 0;//主串索引
+        int j = -1;//字串索引
+
+        while (i < next.length - 1){
+
+            if( j == -1 || p.charAt(i) == p.charAt(j)){
+                i++;
+                j++;
+                next[i] = j;
+            }else{
+                j = next[j];
+            }
+        }
+    }
+    /**
+     * 双指针，类似滑动窗口解法
+     */
+    public int strStr2(String haystack, String needle) {
+        if ("".equals(needle)) {
+            return 0;
+        }
+        int slow = 0;
+        for (int fast = 0; fast < haystack.length(); fast++) {
+            //如果相等，则移动指针；如果不等，则index清零
+            if (haystack.charAt(fast) == needle.charAt(slow)) {
+                slow++;
+                if (slow == needle.length()) {
+                    return fast - slow + 1;
+                }
+            } else if (slow != 0) {
+                //回退并且清零slow
+                fast = fast - slow;
+                slow = 0;
+            }
+
+        }
+        return -1;
+    }
 
     private static void foreachChar(char [] array){
         for(Object obj:array){
